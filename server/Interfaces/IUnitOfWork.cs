@@ -6,6 +6,7 @@ namespace e_commerce.Interfaces
   {
     IUserRepository UserRepository { get; }
     IProductRepo ProductRepo { get; }
+    ICartRepo CartRepo { get; }
     Task<bool> Complete();
     bool HasChanges();
   }

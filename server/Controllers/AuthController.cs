@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -24,9 +22,11 @@ namespace e_commerce.Controllers
 
     private readonly SignInManager<User> _signInManager;
     private readonly RoleManager<Role> _roleManager;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, ITokenService tokenService, IMapper mapper)
+    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, ITokenService tokenService, IMapper mapper, IUnitOfWork unitOfWork)
     {
+      _unitOfWork = unitOfWork;
       _roleManager = roleManager;
       _userManager = userManager;
       _mapper = mapper;
@@ -48,25 +48,38 @@ namespace e_commerce.Controllers
 
       if (!result.Succeeded) return BadRequest(result.Errors);
 
-      var MemberRole = await _roleManager.FindByNameAsync("Member");
+      var UserRole = await _roleManager.FindByNameAsync("User");
 
-      user.Role = MemberRole;
+      user.Role = UserRole;
 
-      var roleResult = await _userManager.AddToRoleAsync(user, "Member");
+      var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
       if (!roleResult.Succeeded) return BadRequest(result.Errors);
 
-
-      await HttpContext.SignInAsync(
-          CookieAuthenticationDefaults.AuthenticationScheme,
-          new ClaimsPrincipal(await _tokenService.CreateToken(user)));
-
-      return new UserDto
+      var cart = new Cart
       {
-        Id = user.Id,
-        UserName = user.UserName,
-        Email = user.Email
+        UserId = user.Id
       };
+
+      _unitOfWork.CartRepo.AddCart(cart);
+
+
+
+      if (await _unitOfWork.Complete())
+      {
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(await _tokenService.CreateToken(user)));
+
+        return new UserDto
+        {
+          Id = user.Id,
+          UserName = user.UserName,
+          Email = user.Email
+        };
+      }
+      return BadRequest("Can not create the user");
+
     }
 
     [HttpPost("login")]

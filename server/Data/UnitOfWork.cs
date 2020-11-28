@@ -17,6 +17,7 @@ namespace e_commerce.Data
 
     public IUserRepository UserRepository => new UserRepository(_context, _mapper);
     public IProductRepo ProductRepo => new ProductRepo(_context, _mapper);
+    public ICartRepo CartRepo => new CartRepo(_context, _mapper);
 
     public async Task<bool> Complete()
     {

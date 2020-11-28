@@ -56,14 +56,16 @@ export const ProductsProvider: FC = (props) => {
       const searchParams = new URLSearchParams(params).toString();
 
       try {
-        const res = await axios.get('/products?' + searchParams);
+        const res = await axios.get('/product?' + searchParams);
+        console.log(res);
         if (page === 1) {
-          setProducts(res.data.data);
+          setProducts(res.data);
         } else {
-          setProducts((prev) => [...prev, ...res.data.data]);
+          setProducts((prev) => [...prev, ...res.data]);
         }
       } catch (error) {
         setError(error?.response?.data?.message ?? 'Somthing went worng.');
+        console.log(error.response);
       } finally {
         setIsLoading(false);
       }
@@ -75,8 +77,8 @@ export const ProductsProvider: FC = (props) => {
     async (slug: string) => {
       setIsLoading(true);
       try {
-        const res = await axios.get(`/products/${slug}`);
-        setProduct(res.data.data);
+        const res = await axios.get(`/product/${slug}`);
+        setProduct(res.data);
       } catch (error) {
         setError(error.response.data.message ?? 'Somthing went worng!');
       } finally {

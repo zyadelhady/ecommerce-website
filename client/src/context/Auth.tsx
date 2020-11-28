@@ -59,10 +59,12 @@ export const AuthProvider: FC = (props) => {
     try {
       const res = await axios.post(`/auth${path}`, data);
       const { userName, email } = res.data;
+      console.log(userName, email);
       setUser({ userName, email });
       toggleAuthModal();
     } catch (error) {
       setError(error.response.data);
+      console.log(error.response);
     } finally {
       setIsLoading(false);
     }

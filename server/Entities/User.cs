@@ -14,8 +14,9 @@ namespace e_commerce.Entities
     public override Guid Id { get; set; } = Guid.NewGuid();
 
     public Guid? RoleId { get; set; }
-
     public Role Role { get; set; }
+
+    public int CartId { get; set; }
 
   }
 }
