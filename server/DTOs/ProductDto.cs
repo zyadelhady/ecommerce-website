@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 namespace e_commerce.DTOs
 {
-
   public record ProductDto(
     string Name,
     string Slug,

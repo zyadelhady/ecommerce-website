@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using e_commerce.Data;
-using e_commerce.Entities;
 using e_commerce.Helpers;
 using e_commerce.Interfaces;
 using e_commerce.services;
+using e_commerce.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -11,8 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace e_commerce.Extensions
@@ -23,6 +21,7 @@ namespace e_commerce.Extensions
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
       services.AddScoped<IUnitOfWork, UnitOfWork>();
+      services.AddScoped<ICollectionRepo, CollectionRepo>();
       services.AddScoped<ITokenService, TokenService>();
       services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 

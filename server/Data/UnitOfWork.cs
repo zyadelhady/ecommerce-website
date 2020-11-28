@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using e_commerce.Interfaces;
+using e_commerce.Repositories;
 
 namespace e_commerce.Data
 {
@@ -15,6 +16,7 @@ namespace e_commerce.Data
     }
 
     public IUserRepository UserRepository => new UserRepository(_context, _mapper);
+    public IProductRepo ProductRepo => new ProductRepo(_context, _mapper);
 
     public async Task<bool> Complete()
     {
