@@ -59,7 +59,7 @@ namespace e_commerce.Controllers
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult> DeleteProduct(string id)
+    public async Task<ActionResult> DeleteProduct(int id)
     {
       var product = await _unitOfWork.ProductRepo.GetProductByIdAsync(id);
 
@@ -72,7 +72,7 @@ namespace e_commerce.Controllers
 
     [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<Product>> UpdateProduct(string id, UpdateProductDto updateProductDto)
+    public async Task<ActionResult<Product>> UpdateProduct(int id, UpdateProductDto updateProductDto)
     {
       var product = await _unitOfWork.ProductRepo.GetProductByIdAsync(id);
 

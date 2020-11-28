@@ -31,7 +31,7 @@ namespace e_commerce.Repositories
       _context.Products.Remove(product);
     }
 
-    public async Task<Product> GetProductByIdAsync(string id)
+    public async Task<Product> GetProductByIdAsync(int id)
     {
       return await _context.Products.FindAsync(id);
     }

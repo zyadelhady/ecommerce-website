@@ -9,7 +9,7 @@ namespace e_commerce.Interfaces
   {
 
     void AddProduct(Product product);
-    Task<Product> GetProductByIdAsync(string id);
+    Task<Product> GetProductByIdAsync(int id);
     Task<ProductDto> GetProductBySlugAsync(string slug);
     Task<PagedList<ProductDto>> GetProductsAsync(ProductParams productParams);
     void DeleteProduct(Product product);
