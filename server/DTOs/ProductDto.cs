@@ -3,6 +3,7 @@ using System.Collections.Generic;
 namespace e_commerce.DTOs
 {
   public record ProductDto(
+    int id,
     string Name,
     string Slug,
     decimal Price,

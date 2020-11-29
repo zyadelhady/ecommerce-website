@@ -17,6 +17,9 @@ namespace e_commerce.Helpers
       .ForMember(dest => dest.Slug, opt => opt.MapFrom(src => Regex.Replace(src.Name, @"\s+", "").ToLower()));
       CreateMap<UpdateProductDto, Product>();
       CreateMap<Cart, CartDto>();
+      CreateMap<CartItem, CartItemDto>();
+      CreateMap<Product, CartProductDto>()
+      .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Images[0]));
     }
   }
 }

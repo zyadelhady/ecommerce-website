@@ -20,6 +20,8 @@ export const Cart: FC<CartProps> = (props) => {
     }
   }, [getCart, user]);
 
+  console.log(cart);
+
   if (!user) {
     return (
       <Container>
@@ -53,7 +55,7 @@ export const Cart: FC<CartProps> = (props) => {
           <textarea></textarea>
         </div>
         <Actions>
-          <h3>Subtotal {numberFormat(cart.total)}</h3>
+          <h3>Subtotal {numberFormat(cart.totalPrice)}</h3>
           <span style={{ fontStyle: 'italic', textAlign: 'right' }}>
             Taxes and shipping calculated at checkout
           </span>

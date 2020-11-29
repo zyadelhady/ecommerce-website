@@ -56,6 +56,8 @@ export const Product: FC<ProductProps> = (props) => {
     });
   };
 
+  console.log(product);
+
   return (
     <>
       <Container>

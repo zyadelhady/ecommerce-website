@@ -50,14 +50,13 @@ export const ProductsProvider: FC = (props) => {
     async (collection: string, page: number) => {
       setIsLoading(true);
       const params = {
-        collection: collection ?? '',
-        page: page.toString(),
+        CollectionName: collection ?? '',
+        Page: page.toString(),
       };
       const searchParams = new URLSearchParams(params).toString();
 
       try {
         const res = await axios.get('/product?' + searchParams);
-        console.log(res);
         if (page === 1) {
           setProducts(res.data);
         } else {

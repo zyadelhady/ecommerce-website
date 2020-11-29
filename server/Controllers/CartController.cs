@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using e_commerce.Data;
@@ -32,25 +33,80 @@ namespace e_commerce.Controllers
     }
 
     [Authorize]
-    [HttpPost("add-to-cart")]
+    [HttpPost]
     public async Task<ActionResult<CartDto>> AddItemToCart(AddCartItemDto itemDto)
     {
       var cart = await _unitOfWork.CartRepo.GetCartAsync(User.GetUserId());
 
-      var newItem = new CartItem
-      {
-        ProductId = itemDto.ProductId,
-        Quantity = 1,
-        Color = itemDto.Color,
-        Size = itemDto.Size
-      };
+      if (cart == null) return NotFound("No cart for this user");
 
-      cart.Items.Add(newItem);
+      var item = _unitOfWork.CartRepo.GetCartItem(cart, itemDto);
+
+      if (item == null)
+      {
+        var newItem = new CartItem
+        {
+          ProductId = itemDto.ProductId,
+          Quantity = 1,
+          Color = itemDto.Color,
+          Size = itemDto.Size
+        };
+
+        cart.Items.Add(newItem);
+      }
+      else
+      {
+        item.Quantity++;
+      }
+
 
       _unitOfWork.CartRepo.UpdateCart(cart);
 
       if (await _unitOfWork.Complete()) return _mapper.Map<CartDto>(cart);
       return BadRequest("Couldn't add the item");
+    }
+
+
+    [Authorize]
+    [HttpPut("item/{id}")]
+    public async Task<ActionResult<CartDto>> UpdateCartItem(int id, updateCartItemDto itemDto)
+    {
+      var cart = await _unitOfWork.CartRepo.GetCartAsync(User.GetUserId());
+      if (cart == null) return NotFound("No cart for this user");
+
+      var item = _unitOfWork.CartRepo.GetCartItem(cart, id);
+
+      if (item == null) return BadRequest("you  should add the item to the cart first");
+
+      if (item.Quantity < 1) return BadRequest("Quantity must be greater than 0");
+
+      item.Quantity = itemDto.Quantity;
+
+      _unitOfWork.CartRepo.UpdateCart(cart);
+
+      if (await _unitOfWork.Complete()) return NoContent();
+
+      return BadRequest("Couldn't update the item");
+    }
+
+    [Authorize]
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteCartItem(int id)
+    {
+      var cart = await _unitOfWork.CartRepo.GetCartAsync(User.GetUserId());
+      if (cart == null) return NotFound("No cart for this user");
+
+      var item = _unitOfWork.CartRepo.GetCartItem(cart, id);
+
+      if (item == null) return BadRequest("this item isn't in your cart");
+
+      _unitOfWork.CartRepo.DeleteCartItem(cart, item);
+
+      _unitOfWork.CartRepo.UpdateCart(cart);
+
+      if (await _unitOfWork.Complete()) return NoContent();
+
+      return BadRequest("Couldn't delete the item");
     }
   }
 }

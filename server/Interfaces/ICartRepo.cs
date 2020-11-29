@@ -9,9 +9,12 @@ namespace e_commerce.Interfaces
   {
     void AddCart(Cart cart);
     void DeleteCart(Cart cart);
+    void DeleteCartItem(Cart cart, CartItem item);
     Task<Cart> GetCartAsync(Guid userId);
     Task<CartDto> GetUserCartAsync(Guid userId);
 
+    CartItem GetCartItem(Cart cart, AddCartItemDto itemDto);
+    CartItem GetCartItem(Cart cart, int id);
     void UpdateCart(Cart cart);
   }
 }

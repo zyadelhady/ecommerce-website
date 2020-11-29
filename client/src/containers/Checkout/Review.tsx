@@ -41,16 +41,16 @@ export default function Review() {
         {cart.items.map((item) => (
           <ListItem className={classes.listItem} key={item.id}>
             <ListItemText
-              primary={item.name}
+              primary={item.product.name}
               secondary={`Quantity: ${item.quantity} / Size: ${item.size} / Color: ${item.color}`}
             />
-            <Typography variant="body2">{item.price}</Typography>
+            <Typography variant="body2">{item.product.price}</Typography>
           </ListItem>
         ))}
         <ListItem className={classes.listItem}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" className={classes.total}>
-            {cart.total}
+            {cart.totalPrice}
           </Typography>
         </ListItem>
       </List>

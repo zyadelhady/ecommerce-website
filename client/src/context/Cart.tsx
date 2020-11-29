@@ -23,10 +23,14 @@ interface ICartContext {
 
 export interface ICartItem {
   id: string;
-  quantity: number;
-  maxquantity: number;
-  size: string;
   color: string;
+  size: string;
+  quantity: number;
+  product: IProductItem;
+}
+
+interface IProductItem {
+  quantity: number;
   name: string;
   price: string;
   image: string;
@@ -34,7 +38,7 @@ export interface ICartItem {
 
 interface ICart {
   items: ICartItem[];
-  total: number;
+  totalPrice: number;
   length: number;
 }
 
@@ -50,7 +54,7 @@ interface IUpdateCartItem {
 }
 
 export const CartContext = createContext<ICartContext>({
-  cart: { items: [], total: 0, length: 0 },
+  cart: { items: [], totalPrice: 0, length: 0 },
   isLoading: false,
   getCart: async () => {},
   addToCart: async () => {},
@@ -61,7 +65,7 @@ export const CartContext = createContext<ICartContext>({
 export const CartProvider: FC = (props) => {
   const [cart, setCart] = useState<ICartContext['cart']>({
     items: [],
-    total: 0,
+    totalPrice: 0,
     length: 0,
   });
   const [isLoading, setIsLoading] = useState<ICartContext['isLoading']>(false);
@@ -71,8 +75,10 @@ export const CartProvider: FC = (props) => {
   const getCart = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get('/users/carts');
-      setCart(res.data.data);
+      const res = await axios.get('/cart');
+      setCart(res.data);
+      console.log(res.data);
+      console.log(cart);
     } catch (error) {
       setError(error.response.data.message);
     } finally {
@@ -81,12 +87,13 @@ export const CartProvider: FC = (props) => {
   }, [setError]);
 
   const addToCart = async (data: IAddToCart) => {
+    console.log(data);
     if (!data.color || !data.size || !data.productId) {
       return setError('Cart item not valid.');
     }
     setIsLoading(true);
     try {
-      await axios.post('/users/carts', data);
+      await axios.post('/cart', data);
     } catch (error) {
       setError(error.response.data.message);
     } finally {
@@ -97,11 +104,11 @@ export const CartProvider: FC = (props) => {
   const removeFromCart = async (id: string) => {
     setIsLoading(true);
     try {
-      await axios.delete(`/users/carts/${id}`);
-      setCart(({ items, total, length }) => {
+      await axios.delete(`/cart/${id}`);
+      setCart(({ items, totalPrice, length }) => {
         const newItems = items.filter((item) => {
           if (item.id === id) {
-            total -= item.quantity * +item.price;
+            totalPrice -= item.quantity * +item.product.price;
             return false;
           }
           return true;
@@ -110,7 +117,7 @@ export const CartProvider: FC = (props) => {
         return {
           items: newItems,
           length: length - 1,
-          total,
+          totalPrice,
         };
       });
     } catch (error) {
@@ -130,11 +137,11 @@ export const CartProvider: FC = (props) => {
     }
     setIsLoading(true);
     try {
-      await axios.patch(`/users/carts/${id}`, data);
+      await axios.put(`/cart/item/${id}`, data);
       const item = cart.items[index];
       setCart((prev) => {
-        prev.total -= item.quantity * +item.price;
-        prev.total += data.quantity * +item.price;
+        prev.totalPrice -= item.quantity * +item.product.price;
+        prev.totalPrice += data.quantity * +item.product.price;
         item.quantity = data.quantity;
         return { ...prev };
       });

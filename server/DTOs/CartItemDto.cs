@@ -1,12 +1,11 @@
-namespace e_commerce.Entities.Base
+namespace e_commerce.DTOs
 {
-  public abstract class ShoppingItem
+  public class CartItemDto
   {
     public int Id { get; set; }
-    public int ProductId { get; set; }
-    public Product Product { get; set; }
     public int Quantity { get; set; }
     public string Color { get; set; }
     public string Size { get; set; }
+    public CartProductDto Product { get; set; }
   }
 }

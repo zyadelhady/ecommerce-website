@@ -46,7 +46,22 @@ namespace e_commerce.Controllers
 
       var result = await _userManager.CreateAsync(user, registerDto.password);
 
-      if (!result.Succeeded) return BadRequest(result.Errors);
+      if (!result.Succeeded)
+      {
+        var message = "";
+
+        foreach (var item in result.Errors)
+        {
+          message += $"{item.Code} ";
+        }
+
+        return BadRequest(new
+        {
+          message
+        });
+      }
+
+
 
       var UserRole = await _roleManager.FindByNameAsync("User");
 
@@ -54,7 +69,20 @@ namespace e_commerce.Controllers
 
       var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
-      if (!roleResult.Succeeded) return BadRequest(result.Errors);
+      if (!roleResult.Succeeded)
+      {
+        var message = "";
+
+        foreach (var item in roleResult.Errors)
+        {
+          message += $"{item.Code} ";
+        }
+
+        return BadRequest(new
+        {
+          message
+        });
+      }
 
       var cart = new Cart
       {
@@ -62,8 +90,6 @@ namespace e_commerce.Controllers
       };
 
       _unitOfWork.CartRepo.AddCart(cart);
-
-
 
       if (await _unitOfWork.Complete())
       {
@@ -88,11 +114,17 @@ namespace e_commerce.Controllers
       var user = await _userManager.Users
       .SingleOrDefaultAsync(x => x.Email == loginDto.email);
 
-      if (user == null) return Unauthorized("Invalid email");
+      if (user == null) return Unauthorized(new
+      {
+        messages = "the email is incorrect"
+      });
 
       var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.password, false);
 
-      if (!result.Succeeded) return Unauthorized();
+      if (!result.Succeeded) return Unauthorized(new
+      {
+        messages = "the email or password is incorrect"
+      });
 
       await HttpContext.SignInAsync(
           CookieAuthenticationDefaults.AuthenticationScheme,

@@ -3,8 +3,9 @@ using e_commerce.Entities;
 
 namespace e_commerce.DTOs
 {
-  public record CartDto(
-     decimal TotalPrice,
-     ICollection<CartItem> Items
-  );
+  public class CartDto
+  {
+    public decimal TotalPrice { get; set; }
+    public ICollection<CartItemDto> Items { get; set; }
+  }
 }

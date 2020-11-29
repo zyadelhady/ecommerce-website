@@ -36,6 +36,7 @@ namespace e_commerce.Repositories
     {
       return await _context.Carts.Where(c => c.UserId == userId)
       .Include(c => c.Items)
+      .ThenInclude(p => p.Product)
       .FirstOrDefaultAsync();
     }
 
@@ -47,11 +48,39 @@ namespace e_commerce.Repositories
       .FirstOrDefaultAsync();
     }
 
-    public void UpdateCart(Cart cart)
+    public CartItem GetCartItem(Cart cart, AddCartItemDto itemDto)
     {
-      _context.Entry(cart).State = EntityState.Modified;
+      return cart.Items.FirstOrDefault(i =>
+          i.CartId == cart.Id
+          && i.Color == itemDto.Color
+          && i.Size == itemDto.Size
+          && i.ProductId == itemDto.ProductId);
     }
 
+
+    public CartItem GetCartItem(Cart cart, int id)
+    {
+      return cart.Items.FirstOrDefault(c => c.Id == id);
+    }
+    public void DeleteCartItem(Cart cart, CartItem item)
+    {
+      cart.Items.Remove(item);
+    }
+
+    public async void UpdateCart(Cart cart)
+    {
+      cart.TotalPrice = 0;
+
+
+      foreach (CartItem item in cart.Items)
+      {
+        var Product = await _context.Products.FindAsync(item.ProductId);
+
+        cart.TotalPrice += Product.Price * item.Quantity;
+      }
+
+      _context.Entry(cart).State = EntityState.Modified;
+    }
 
   }
 }

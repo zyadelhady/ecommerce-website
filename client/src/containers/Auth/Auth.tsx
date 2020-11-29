@@ -12,8 +12,8 @@ export const Auth: FC<AuthProps> = (props) => {
 
   const [isLogin, setIsLogin] = useState(true);
   const [data, setData] = useState<IData>({
-    email: 'test@user.com',
-    password: 'Testuser1234',
+    email: 'test@test.com',
+    password: 'Test1234',
   });
 
   const toggleAuth = () => setIsLogin((prev) => !prev);
@@ -39,7 +39,11 @@ export const Auth: FC<AuthProps> = (props) => {
         }}
       >
         {isLogin ? <Login /> : <Signup />}
-        <Button.Border onClick={toggleAuth} disabled={authLodaing}>
+        <Button.Border
+          type="button"
+          onClick={toggleAuth}
+          disabled={authLodaing}
+        >
           {isLogin ? 'Create Account' : 'Login'}
         </Button.Border>
       </Form>
@@ -59,13 +63,13 @@ const Login: FC<LoginProps> = (props) => {
         id="email"
         placeholder="your email"
         type="email"
-        defaultValue="test@user.com"
+        defaultValue="test@test.com"
       />
       <Input
         id="password"
         placeholder="password"
         type="password"
-        defaultValue="testuser1234"
+        defaultValue="Test1234"
       />
       <Button.Full type="submit" disabled={authLodaing}>
         {authLodaing ? 'Loading...' : 'Login'}
@@ -82,10 +86,21 @@ const Signup: FC<SignupProps> = (props) => {
   return (
     <>
       <h2>Signup</h2>
-      <Input id="name" placeholder="your name" type="text" />
-      <Input id="email" placeholder="your email" type="email" />
-      <Input id="password" placeholder="password" type="password" />
       <Input
+        required={true}
+        id="username"
+        placeholder="your name"
+        type="text"
+      />
+      <Input required={true} id="email" placeholder="your email" type="email" />
+      <Input
+        required={true}
+        id="password"
+        placeholder="password"
+        type="password"
+      />
+      <Input
+        required={true}
         id="passwordConfirm"
         placeholder="password confirm"
         type="password"

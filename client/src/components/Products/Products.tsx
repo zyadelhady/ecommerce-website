@@ -61,7 +61,7 @@ export const Products: FC<ProductsProps> = (props) => {
       <Cards>
         {products.map((product) => (
           <Card.Product
-            key={product.id}
+            key={product.slug}
             url={`/products/${product.slug}`}
             img={product.images[0]}
             name={product.name}
