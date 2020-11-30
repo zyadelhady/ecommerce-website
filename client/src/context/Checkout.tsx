@@ -75,7 +75,7 @@ export const CheckoutProvider: FC = (props) => {
   const placeOrder = async () => {
     // dummy place order because l'm lazy
     try {
-      await axios.delete('/users/carts');
+      await axios.delete('/cart');
     } catch (error) {
       setError(error.response.data.message);
     }

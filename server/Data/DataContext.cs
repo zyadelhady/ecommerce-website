@@ -21,8 +21,9 @@ namespace e_commerce.Data
     public DbSet<Product> Products { get; set; }
     public DbSet<Collection> Collections { get; set; }
     public DbSet<Cart> Carts { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder builder)
     {
       base.OnModelCreating(builder);
 
