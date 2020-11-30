@@ -147,6 +147,11 @@ namespace e_commerce.Controllers
             }
 
             _context.RemoveRange(cart.Items);
+            cart.Items.Clear();
+
+            cart.TotalPrice = 0;
+
+            _unitOfWork.CartRepo.UpdateCart(cart);
 
            await _unitOfWork.Complete();
 
